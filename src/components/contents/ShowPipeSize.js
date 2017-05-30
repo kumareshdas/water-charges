@@ -1,3 +1,15 @@
+function getUrlVars() {
+   var vars = [],
+       hash;
+   var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+   for (var i = 0; i < hashes.length; i++) {
+       hash = hashes[i].split('=');
+       vars.push(hash[0]);
+       vars[hash[0]] = hash[1];
+   }
+   return vars;
+}
+
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 
@@ -50,7 +62,8 @@ class ShowPipeSize extends Component {
   constructor(props) {
        super(props);
        this.state = {
-         searchBtnText : 'Search'
+         searchBtnText : 'Search',
+         list:[],
        }
        this.search=this.search.bind(this);
    }
@@ -120,8 +133,52 @@ class ShowPipeSize extends Component {
       buttonText
     } = this.props;
     let {search} = this;
+    let{list}=this.state;
+    
     console.log(showPipeSize);
     console.log(isTableShow);
+    let renderAction=function(type,id){
+      if (type==="Update") {
+        console.log(type);
+
+              return (
+                      <a href={`masters/PipeSize?id=${id}&type=${type}`} className="btn btn-default btn-action"><span className="glyphicon glyphicon-pencil"></span></a>
+              );
+
+    }
+    else {
+
+            return (
+                    <a href={`masters/PipeSize?id=${id}&type=${type}`} className="btn btn-default btn-action"><span className="glyphicon glyphicon-modal-window"></span></a>
+
+            );
+
+        }
+}
+let renderBody=function()
+{
+  //  console.log(list);
+  return list.map((item,index)=>
+  {
+
+        return (<tr key={index}>
+                  <td>{index+1}</td>
+                  <td data-label="code">{item.code}</td>
+                  <td data-label="name">{item.name}</td>
+                  <td data-label="active">{item.active?"ACTIVE":"INACTIVE"}</td>
+                  <td data-label="action">
+                {renderAction(getUrlVars()["type"],item.id)}
+                </td>
+
+
+
+            </tr>
+        );
+
+
+  })
+}
+
     const viewTabel=()=>
     {
       return (
@@ -140,163 +197,8 @@ class ShowPipeSize extends Component {
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td>1</td>
-              <td>Table cell</td>
-              <td>Table cell</td>
-              <td>Table cell</td>
-              <td>Table cell</td>
-              <td>
-              <DropdownButton title="Action" id="dropdown-1" pullRight>
-                  <MenuItem>View</MenuItem>
-                  <MenuItem>Update</MenuItem>
-              </DropdownButton>
-              </td>
-            </tr>
-            <tr>
-              <td>2</td>
-              <td>Table cell</td>
-              <td>Table cell</td>
-              <td>Table cell</td>
-              <td>Table cell</td>
-              <td>
-              <DropdownButton title="Action" id="dropdown-2" pullRight>
-                  <MenuItem>View</MenuItem>
-                  <MenuItem>Update</MenuItem>
-              </DropdownButton>
-              </td>
-            </tr>
-            <tr>
-              <td>2</td>
-              <td>Table cell</td>
-              <td>Table cell</td>
-              <td>Table cell</td>
-              <td>Table cell</td>
-              <td>
-              <DropdownButton title="Action" id="dropdown-2" pullRight>
-                  <MenuItem>View</MenuItem>
-                  <MenuItem>Update</MenuItem>
-              </DropdownButton>
-              </td>
-            </tr>
-            <tr>
-              <td>2</td>
-              <td>Table cell</td>
-              <td>Table cell</td>
-              <td>Table cell</td>
-              <td>Table cell</td>
-              <td>
-              <DropdownButton title="Action" id="dropdown-2" pullRight>
-                  <MenuItem>View</MenuItem>
-                  <MenuItem>Update</MenuItem>
-              </DropdownButton>
-              </td>
-            </tr>
-            <tr>
-              <td>2</td>
-              <td>Table cell</td>
-              <td>Table cell</td>
-              <td>Table cell</td>
-              <td>Table cell</td>
-              <td>
-              <DropdownButton title="Action" id="dropdown-2" pullRight>
-                  <MenuItem>View</MenuItem>
-                  <MenuItem>Update</MenuItem>
-              </DropdownButton>
-              </td>
-            </tr>
-            <tr>
-              <td>2</td>
-              <td>Table cell</td>
-              <td>Table cell</td>
-              <td>Table cell</td>
-              <td>Table cell</td>
-              <td>
-              <DropdownButton title="Action" id="dropdown-2" pullRight>
-                  <MenuItem>View</MenuItem>
-                  <MenuItem>Update</MenuItem>
-              </DropdownButton>
-              </td>
-            </tr>
-            <tr>
-              <td>2</td>
-              <td>Table cell</td>
-              <td>Table cell</td>
-              <td>Table cell</td>
-              <td>Table cell</td>
-              <td>
-              <DropdownButton title="Action" id="dropdown-2" pullRight>
-                  <MenuItem>View</MenuItem>
-                  <MenuItem>Update</MenuItem>
-              </DropdownButton>
-              </td>
-            </tr>
-            <tr>
-              <td>2</td>
-              <td>Table cell</td>
-              <td>Table cell</td>
-              <td>Table cell</td>
-              <td>Table cell</td>
-              <td>
-              <DropdownButton title="Action" id="dropdown-2" pullRight>
-                  <MenuItem>View</MenuItem>
-                  <MenuItem>Update</MenuItem>
-              </DropdownButton>
-              </td>
-            </tr>
-            <tr>
-              <td>2</td>
-              <td>Table cell</td>
-              <td>Table cell</td>
-              <td>Table cell</td>
-              <td>Table cell</td>
-              <td>
-              <DropdownButton title="Action" id="dropdown-2" pullRight>
-                  <MenuItem>View</MenuItem>
-                  <MenuItem>Update</MenuItem>
-              </DropdownButton>
-              </td>
-            </tr>
-            <tr>
-              <td>2</td>
-              <td>Table cell</td>
-              <td>Table cell</td>
-              <td>Table cell</td>
-              <td>Table cell</td>
-              <td>
-              <DropdownButton title="Action" id="dropdown-2" pullRight>
-                  <MenuItem>View</MenuItem>
-                  <MenuItem>Update</MenuItem>
-              </DropdownButton>
-              </td>
-            </tr>
-            <tr>
-              <td>2</td>
-              <td>Table cell</td>
-              <td>Table cell</td>
-              <td>Table cell</td>
-              <td>Table cell</td>
-              <td>
-              <DropdownButton title="Action" id="dropdown-2" pullRight>
-                  <MenuItem>View</MenuItem>
-                  <MenuItem>Update</MenuItem>
-              </DropdownButton>
-              </td>
-            </tr>
+          {renderBody()}
 
-            <tr>
-              <td>3</td>
-              <td>Table cell</td>
-              <td>Table cell</td>
-              <td>Table cell</td>
-              <td>Table cell</td>
-              <td>
-                <DropdownButton title="Action" id="dropdown-3" pullRight>
-                    <MenuItem>View</MenuItem>
-                    <MenuItem>Update</MenuItem>
-                </DropdownButton>
-              </td>
-            </tr>
           </tbody>
         </Table>
       </CardText>

@@ -1,3 +1,14 @@
+function getUrlVars() {
+   var vars = [],
+       hash;
+   var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+   for (var i = 0; i < hashes.length; i++) {
+       hash = hashes[i].split('=');
+       vars.push(hash[0]);
+       vars[hash[0]] = hash[1];
+   }
+   return vars;
+}
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import {Grid, Row, Col, Table, DropdownButton} from 'react-bootstrap';
@@ -63,24 +74,37 @@ class PipeSize extends Component {
 
   add(e)
   {
+    var type=getUrlVars()["type"];
+    var id=getUrlVars()["id"];
+
+    // let mode=getUrlVars()["type"];
 
       let {changeButtonText,pipeSize}=this.props;
       var PipeSize = {
-        sizeInMilimeter:pipeSize.ownerName,
-        sizeInInch:pipeSize.Description,
+        sizeInMilimeter:pipeSize.sizeInMilimeter,
+        sizeInInch:pipeSize.sizeInInch,
         active:pipeSize.active,
         tenantId:'default'
+    }
+      if(type == "Update"){
+        let response=Api.commonApiPost("wcms-masters", "category", "_update/"+id, {},{PipeSize}).then(function(response)
+        {
+        console.log(response);
+      },function(err) {
+          alert(err);
+      });
+
       }
+
+    else{
       let response=Api.commonApiPost("wcms-masters", "pipesize", "_create", {},{PipeSize}).then(function(response)
       {
-      console.log(response);
+      // console.log(response);
     },function(err) {
         alert(err);
     });
-
+  }
     }
-
-
 
 
 
@@ -101,13 +125,21 @@ class PipeSize extends Component {
       handleChange,
 
     } = this.props;
-    let {search} = this;
-    console.log(pipeSize);
+    let {add} = this;
+    let mode=getUrlVars()["type"];
+
+    const showActionButton=function() {
+      if((!mode) ||mode==="Update")
+      {
+        // console.log(mode);
+        return(<RaisedButton type="submit" label={mode?"Save":"Add"} backgroundColor={brown500} labelColor={white}  onClick={()=> {
+                             add("sizeInMilimeter","sizeInInch","active")}} />
+        )
+      }
+    };
+     console.log(pipeSize);
         return (
       <div className="pipeSize">
-        <form onSubmit={(e) => {
-          search(e)
-        }}>
           <Card>
             <CardHeader title={< strong style = {{color:"#5a3e1b"}} > Create Pipe Size Master< /strong>}/>
 
@@ -117,24 +149,25 @@ class PipeSize extends Component {
                   <Grid>
                     <Row>
                     <Col xs={12} md={6}>
-                      <TextField errorText={fieldErrors.ownerName
-                        ? fieldErrors.ownerName
-                        : ""} value={pipeSize.ownerName?pipeSize.ownerName:""} onChange={(e) => handleChange(e, "ownerName", false, "")} hintText="123456" floatingLabelText="H.S.C Pipe Size (mm)" />
+                      <TextField errorText={fieldErrors.sizeInMilimeter
+                        ? fieldErrors.sizeInMilimeter
+                        : ""} value={pipeSize.sizeInMilimeter?pipeSize.sizeInMilimeter:""} onChange={(e) =>{ handleChange(e, "sizeInMilimeter", false, "");
+
+                         
+                      } } hintText="123456" floatingLabelText="H.S.C Pipe Size (mm)" />
                     </Col>
 
                     <Col xs={12} md={6}>
-                      <TextField  disabled={true} errorText={fieldErrors.Description
-                        ? fieldErrors.Description
-                        : ""} value={pipeSize.Description?pipeSize.Description:""} onChange={(e) => handleChange(e, "Description", false, "")}  floatingLabelText="H.S.C Pipe Size (inch)" />
+                      <TextField  disabled={true} errorText={fieldErrors.sizeInInch
+                        ? fieldErrors.sizeInInch
+                        : ""} value={pipeSize.sizeInMilimeter?pipeSize.sizeInMilimeter*0.039:""} onChange={(e) => handleChange(e, "sizeInInch", false, "")}  floatingLabelText="H.S.C Pipe Size (inch)" />
                     </Col>
                     </Row>
                     <Row>
                     <Col xs={12} md={6}>
                                         <Checkbox
                                          label="Active"
-                                         errorText={fieldErrors.Active
-                                           ? fieldErrors.Active
-                                           : ""}
+                                         defaultChecked={true}
                                          value={pipeSize.Active?pipeSize.Active:""}
                                          onCheck={(event,isInputChecked) => {
                                            var e={
@@ -161,8 +194,9 @@ class PipeSize extends Component {
               <div style={{
                 float: "center"
               }}>
-              <RaisedButton type="submit" label="Add" backgroundColor={brown500} labelColor={white} onClick={()=> {
-                                  this.add("sizeInMilimeter","sizeInInch","active")}}/>
+
+
+              {showActionButton()}
               <RaisedButton label="Close"/>
               </div>
             </CardText>
@@ -172,7 +206,6 @@ class PipeSize extends Component {
 
 
 
-        </form>
 
       </div>
     );
@@ -200,7 +233,7 @@ const mapDispatchToProps = dispatch => ({
   handleChange: (e, property, isRequired, pattern) => {
     dispatch({type: "HANDLE_CHANGE", property, value: e.target.value, isRequired, pattern});
   },
-  
+
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(PipeSize);

@@ -1,22 +1,20 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-
 import {Grid, Row, Col, Table, DropdownButton} from 'react-bootstrap';
 import {Card, CardHeader, CardText} from 'material-ui/Card';
 import TextField from 'material-ui/TextField';
 import {brown500, red500,white,orange800} from 'material-ui/styles/colors';
-import DatePicker from 'material-ui/DatePicker';
 import Checkbox from 'material-ui/Checkbox';
-import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
 import RaisedButton from 'material-ui/RaisedButton';
+import Api from '../../../api/wCAPIS';
+
 
 const $ = require('jquery');
 $.DataTable = require('datatables.net');
 const dt = require('datatables.net-bs');
 
-
-const buttons = require('datatables.net-buttons-bs');
+// const buttons = require('datatables.net-buttons-bs');
 
 require('datatables.net-buttons/js/buttons.colVis.js'); // Column visibility
 require('datatables.net-buttons/js/buttons.html5.js'); // HTML 5 file export
@@ -51,13 +49,9 @@ class PipeSize extends Component {
        this.state = {
          searchBtnText : 'Search'
        }
-       this.search=this.search.bind(this);
+       this.add=this.add.bind(this);
    }
 
-  componentWillMount()
-  {
-    //call boundary service fetch wards,location,zone data
-  }
 
   componentDidMount()
   {
@@ -67,55 +61,45 @@ class PipeSize extends Component {
 
   }
 
-  componentWillUnmount(){
-     $('#propertyTaxTable')
-     .DataTable()
-     .destroy(true);
-  }
-
-
-
-  search(e)
+  add(e)
   {
-      let {showTable,changeButtonText}=this.props;
-      e.preventDefault();
-      console.log("Show Table");
-      flag=1;
-      changeButtonText("Search Again");
-      // this.setState({searchBtnText:'Search Again'})
-      showTable(true);
-  }
 
-  componentWillUpdate() {
-    if(flag == 1) {
-      flag = 0;
-      $('#propertyTaxTable').dataTable().fnDestroy();
-    }
-  }
-
-  componentDidUpdate(prevProps, prevState) {
-      if (true) {
-          $('#propertyTaxTable').DataTable({
-            dom: 'lBfrtip',
-            buttons: [
-                     'copy', 'csv', 'excel', 'pdf', 'print'
-             ],
-             ordering: false,
-             bDestroy: true,
-
-          });
+      let {changeButtonText,pipeSize}=this.props;
+      var PipeSize = {
+        sizeInMilimeter:pipeSize.ownerName,
+        sizeInInch:pipeSize.Description,
+        active:pipeSize.active,
+        tenantId:'default'
       }
-  }
+      let response=Api.commonApiPost("wcms-masters", "pipesize", "_create", {},{PipeSize}).then(function(response)
+      {
+      console.log(response);
+    },function(err) {
+        alert(err);
+    });
+
+    }
+
+
+
+
+
+
+  // componentWillUpdate() {
+  //   if(flag == 1) {
+  //     flag = 0;
+  //     $('#propertyTaxTable').dataTable().fnDestroy();
+  //   }
+  // }
+
 
   render() {
     let {
       pipeSize,
       fieldErrors,
-      isFormValid,
+      // isFormValid,
       handleChange,
-      handleChangeNextOne,
-      handleChangeNextTwo,
-      buttonText
+
     } = this.props;
     let {search} = this;
     console.log(pipeSize);
@@ -141,7 +125,7 @@ class PipeSize extends Component {
                     <Col xs={12} md={6}>
                       <TextField  disabled={true} errorText={fieldErrors.Description
                         ? fieldErrors.Description
-                        : ""} value={pipeSize.Description?pipeSize.Description:""} multiLine={true} onChange={(e) => handleChange(e, "Description", false, "")}  floatingLabelText="H.S.C Pipe Size (inch)" />
+                        : ""} value={pipeSize.Description?pipeSize.Description:""} onChange={(e) => handleChange(e, "Description", false, "")}  floatingLabelText="H.S.C Pipe Size (inch)" />
                     </Col>
                     </Row>
                     <Row>
@@ -177,7 +161,8 @@ class PipeSize extends Component {
               <div style={{
                 float: "center"
               }}>
-              <RaisedButton type="submit" label="Add" backgroundColor={brown500} labelColor={white}/>
+              <RaisedButton type="submit" label="Add" backgroundColor={brown500} labelColor={white} onClick={()=> {
+                                  this.add("sizeInMilimeter","sizeInInch","active")}}/>
               <RaisedButton label="Close"/>
               </div>
             </CardText>
@@ -207,7 +192,7 @@ const mapDispatchToProps = dispatch => ({
         },
         pattern: {
           current: [],
-          required: ["assessmentNo", "oldAssessmentNo", "mobileNo", "aadharNo", "doorNo"]
+          required: ["sizeInMilimeter"]
         }
       }
     });
@@ -215,37 +200,7 @@ const mapDispatchToProps = dispatch => ({
   handleChange: (e, property, isRequired, pattern) => {
     dispatch({type: "HANDLE_CHANGE", property, value: e.target.value, isRequired, pattern});
   },
-  handleChangeNextOne: (e, property, propertyOne, isRequired, pattern) => {
-    dispatch({
-      type: "HANDLE_CHANGE_NEXT_ONE",
-      property,
-      propertyOne,
-      value: e.target.value,
-      isRequired,
-      pattern
-    })
-  },
-  handleChangeNextTwo: (e, property, propertyOne, propertyTwo, isRequired, pattern) => {
-    dispatch({
-      type: "HANDLE_CHANGE_NEXT_ONE",
-      property,
-      propertyOne,
-      propertyTwo,
-      value: e.target.value,
-      isRequired,
-      pattern
-    })
-  },
-  showTable:(state)=>
-  {
-    dispatch({type:"SHOW_TABLE",state});
-  },
-  changeButtonText:(text)=>
-  {
-    dispatch({type:"BUTTON_TEXT",text});
-  }
-
-
+  
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(PipeSize);

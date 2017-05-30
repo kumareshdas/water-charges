@@ -37,15 +37,23 @@ class PropertyCategory extends Component {
        this.state = {
        }
    }
+   componentDidMount()
+  {
+    let {initForm} = this.props;
+    initForm();
 
+
+  }
 
 
     render(){
       let {
-        VacantLand,
+        propertyCategory,
+        propertyType,
         handleChange,
         fieldErrors,
       }=this.props;
+      console.log(propertyCategory);
       return(
         <div className="PropertyCategory">
             <Card>
@@ -60,15 +68,15 @@ class PropertyCategory extends Component {
                                   <Row>
                                     <Col xs={12} md={6}>
 
-                                      <SelectField errorText={fieldErrors.vacantLandPlotArea
-                                        ? fieldErrors.vacantLandPlotArea
-                                        : ""} value={PropertyCategory.vacantLandPlotArea?PropertyCategory.vacantLandPlotArea:""} onChange={(event, index, value) => {
+                                      <SelectField errorText={fieldErrors.propertyType
+                                        ? fieldErrors.propertyType
+                                        : ""} value={propertyCategory.propertyType?propertyCategory.propertyType:""} onChange={(event, index, value) => {
                                           var e = {
                                             target: {
                                               value: value
                                             }
                                           };
-                                          handleChange(e, "vacantLandPlotArea", false, "")}} floatingLabelText="Property Type" >
+                                          handleChange(e, "propertyType", false, "")}} floatingLabelText="Property Type" >
                                         <MenuItem value={1} primaryText=""/>
                                         <MenuItem value={2} primaryText="Every Night"/>
                                         <MenuItem value={3} primaryText="Weeknights"/>
@@ -79,15 +87,15 @@ class PropertyCategory extends Component {
                                     </Col>
 
                                     <Col xs={12} md={6}>
-                                      <SelectField errorText={fieldErrors.layoutApprovalAuthority
-                                        ? fieldErrors.layoutApprovalAuthority
-                                        : ""} value={PropertyCategory.layoutApprovalAuthority?PropertyCategory.layoutApprovalAuthority:""} onChange={(event, index, value) =>{
+                                      <SelectField errorText={fieldErrors.categoryType
+                                        ? fieldErrors.categoryType
+                                        : ""} value={propertyCategory.categoryType?propertyCategory.categoryType:""} onChange={(event, index, value) =>{
                                           var e = {
                                             target: {
                                               value: value
                                             }
                                           };
-                                          handleChange(e, "layoutApprovalAuthority", false, "")}
+                                          handleChange(e, "categoryType", false, "")}
                                         } floatingLabelText="Category Type" >
                                         <MenuItem value={1} primaryText=""/>
                                         <MenuItem value={2} primaryText="Every Night"/>
@@ -104,14 +112,15 @@ class PropertyCategory extends Component {
                                                        errorText={fieldErrors.Active
                                                          ? fieldErrors.Active
                                                          : ""}
-                                                       value={PropertyCategory.Active?PropertyCategory.Active:""}
+
+                                                       value={propertyCategory.active?propertyCategory.active:""}
                                                        onCheck={(event,isInputChecked) => {
                                                          var e={
                                                            "target":{
                                                              "value":isInputChecked
                                                            }
                                                          }
-                                                         handleChange(e, "Active", false, "")}
+                                                         handleChange(e, "active", true, "")}
                                                        }
                                                        style={styles.checkbox}
                                                        style={styles.topGap}
@@ -135,7 +144,7 @@ class PropertyCategory extends Component {
     }
 
 }
-const mapStateToProps = state => ({VacantLand: state.form.form, fieldErrors: state.form.fieldErrors, isFormValid: state.form.isFormValid,isTableShow:state.form.showTable,buttonText:state.form.buttonText});
+const mapStateToProps = state => ({propertyCategory: state.form.form, fieldErrors: state.form.fieldErrors, isFormValid: state.form.isFormValid,isTableShow:state.form.showTable,buttonText:state.form.buttonText});
 
 const mapDispatchToProps = dispatch => ({
   initForm: () => {
@@ -152,7 +161,7 @@ const mapDispatchToProps = dispatch => ({
   },
   handleChange: (e, property, isRequired, pattern) => {
     dispatch({type: "HANDLE_CHANGE", property, value: e.target.value, isRequired, pattern});
-  },
+  }
 
 
 

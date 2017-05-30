@@ -1,3 +1,18 @@
+function getUrlVars() {
+   var vars = [],
+       hash;
+   var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+   for (var i = 0; i < hashes.length; i++) {
+       hash = hashes[i].split('=');
+       vars.push(hash[0]);
+       vars[hash[0]] = hash[1];
+   }
+   return vars;
+}
+
+
+
+
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 
@@ -10,6 +25,8 @@ import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
 import RaisedButton from 'material-ui/RaisedButton';
 import DataTable from '../common/Table';
+import Api from '../../api/wCAPIS';
+
 
 const $ = require('jquery');
 $.DataTable = require('datatables.net');
@@ -49,26 +66,53 @@ class ShowCategoryType extends Component {
   constructor(props) {
        super(props);
        this.state = {
-         searchBtnText : 'Search'
+         searchBtnText : 'Search',list:[],
+         tenantId : 'default',
+
        }
        this.search=this.search.bind(this);
    }
 
+   close(){
+         // widow.close();
+         open(location, '_self').close();
+     }
+
   componentWillMount()
   {
-    //call boundary service fetch wards,location,zone data
+    $('#categoryTypeTable').DataTable({
+         dom: 'lBfrtip',
+         buttons: [
+                   'excel', 'pdf', 'print'
+          ],
+          ordering: false,
+          bDestroy: true,
+
+       });
+
+        let response=Api.commonApiPost("wcms-masters", "category", "_search", {},{}).then((res)=>
+    {
+      this.setState({
+        list: res.Category
+      });
+
+    },(err)=> {
+        alert(err);
+    });//call boundary service fetch wards,location,zone data
   }
 
   componentDidMount()
   {
     let {initForm} = this.props;
+    // let tenantId ='default';
     initForm();
 
 
-  }
+
+}
 
   componentWillUnmount(){
-     $('#propertyTaxTable')
+     $('#categoryTypeTable')
      .DataTable()
      .destroy(true);
   }
@@ -79,7 +123,7 @@ class ShowCategoryType extends Component {
   {
       let {showTable,changeButtonText}=this.props;
       e.preventDefault();
-      console.log("Show Table");
+      // console.log("Show Table");
       flag=1;
       changeButtonText("Search Again");
       // this.setState({searchBtnText:'Search Again'})
@@ -89,22 +133,23 @@ class ShowCategoryType extends Component {
   componentWillUpdate() {
     if(flag == 1) {
       flag = 0;
-      $('#propertyTaxTable').dataTable().fnDestroy();
+      $('#categoryTypeTable').dataTable().fnDestroy();
     }
   }
 
   componentDidUpdate(prevProps, prevState) {
-      if (true) {
-          $('#propertyTaxTable').DataTable({
-            dom: 'lBfrtip',
-            buttons: [
-                      'excel', 'pdf', 'print'
-             ],
-             ordering: false,
-             bDestroy: true,
+    // if (true) {
+    //     $('#categoryTypeTable').DataTable({
+    //       dom: 'lBfrtip',
+    //       buttons: [
+    //                 'excel', 'pdf', 'print'
+    //        ],
+    //        ordering: false,
+    //        bDestroy: true,
+    //
+    //     });
+    // }
 
-          });
-      }
   }
 
   render() {
@@ -118,185 +163,75 @@ class ShowCategoryType extends Component {
       handleChangeNextTwo,
       buttonText
     } = this.props;
+
     let {search} = this;
-    console.log(showCategoryType);
-    console.log(isTableShow);
+    let{list}=this.state;
+    // console.log(showCategoryType);
+    // console.log(isTableShow);
+    // console.log(list);
+    let renderAction=function(type,id){
+      if (type==="Update") {
+        console.log(type);
+
+              return (
+                      <a href={`masters/CategoryType?id=${id}&type=${type}`} className="btn btn-default btn-action"><span className="glyphicon glyphicon-pencil"></span></a>
+              );
+
+    }
+    else {
+
+            return (
+                    <a href={`masters/CategoryType?id=${id}&type=${type}`} className="btn btn-default btn-action"><span className="glyphicon glyphicon-modal-window"></span></a>
+
+            );
+
+        }
+}
+
+    let renderBody=function()
+    {
+      //  console.log(list);
+      return list.map((item,index)=>
+      {
+
+            return (<tr key={index}>
+                      <td>{index+1}</td>
+                      <td data-label="code">{item.code}</td>
+                      <td data-label="name">{item.name}</td>
+                      <td data-label="active">{item.active?"ACTIVE":"INACTIVE"}</td>
+                      <td data-label="action">
+                    {renderAction(getUrlVars()["type"],item.id)}
+                    </td>
+
+
+
+                </tr>
+            );
+
+
+      })
+    }
+
     const viewTabel=()=>
     {
       return (
         <Card>
           <CardHeader title={< strong style = {{color:"#5a3e1b"}} > Result < /strong>}/>
           <CardText>
-        <Table id="propertyTaxTable" style={{color:"black",fontWeight: "normal"}} bordered responsive>
+        <Table id="categoryTypeTable" style={{color:"black",fontWeight: "normal"}} bordered responsive>
           <thead style={{backgroundColor:"#f2851f",color:"white"}}>
             <tr>
-              <th>#</th>
-              <th>Code</th>
               <th>Sl No.</th>
+              <th>Code</th>
               <th>Category Type</th>
-              <th> Status</th>
+              <th>Status</th>
               <th>Action</th>
             </tr>
           </thead>
-          <tbody>
-            <tr>
-              <td>1</td>
-              <td>Table cell</td>
-              <td>Table cell</td>
-              <td>Table cell</td>
-              <td>Table cell</td>
-              <td>
-              <DropdownButton title="Action" id="dropdown-1" pullRight>
-                  <MenuItem>View</MenuItem>
-                  <MenuItem>Update</MenuItem>
-              </DropdownButton>
-              </td>
-            </tr>
-            <tr>
-              <td>2</td>
-              <td>Table cell</td>
-              <td>Table cell</td>
-              <td>Table cell</td>
-              <td>Table cell</td>
-              <td>
-              <DropdownButton title="Action" id="dropdown-2" pullRight>
-                  <MenuItem>View</MenuItem>
-                  <MenuItem>Update</MenuItem>
-              </DropdownButton>
-              </td>
-            </tr>
-            <tr>
-              <td>2</td>
-              <td>Table cell</td>
-              <td>Table cell</td>
-              <td>Table cell</td>
-              <td>Table cell</td>
-              <td>
-              <DropdownButton title="Action" id="dropdown-2" pullRight>
-                  <MenuItem>View</MenuItem>
-                  <MenuItem>Update</MenuItem>
-              </DropdownButton>
-              </td>
-            </tr>
-            <tr>
-              <td>2</td>
-              <td>Table cell</td>
-              <td>Table cell</td>
-              <td>Table cell</td>
-              <td>Table cell</td>
-              <td>
-              <DropdownButton title="Action" id="dropdown-2" pullRight>
-                  <MenuItem>View</MenuItem>
-                  <MenuItem>Update</MenuItem>
-              </DropdownButton>
-              </td>
-            </tr>
-            <tr>
-              <td>2</td>
-              <td>Table cell</td>
-              <td>Table cell</td>
-              <td>Table cell</td>
-              <td>Table cell</td>
-              <td>
-              <DropdownButton title="Action" id="dropdown-2" pullRight>
-                  <MenuItem>View</MenuItem>
-                  <MenuItem>Update</MenuItem>
-              </DropdownButton>
-              </td>
-            </tr>
-            <tr>
-              <td>2</td>
-              <td>Table cell</td>
-              <td>Table cell</td>
-              <td>Table cell</td>
-              <td>Table cell</td>
-              <td>
-              <DropdownButton title="Action" id="dropdown-2" pullRight>
-                  <MenuItem>View</MenuItem>
-                  <MenuItem>Update</MenuItem>
-              </DropdownButton>
-              </td>
-            </tr>
-            <tr>
-              <td>2</td>
-              <td>Table cell</td>
-              <td>Table cell</td>
-              <td>Table cell</td>
-              <td>Table cell</td>
-              <td>
-              <DropdownButton title="Action" id="dropdown-2" pullRight>
-                  <MenuItem>View</MenuItem>
-                  <MenuItem>Update</MenuItem>
-              </DropdownButton>
-              </td>
-            </tr>
-            <tr>
-              <td>2</td>
-              <td>Table cell</td>
-              <td>Table cell</td>
-              <td>Table cell</td>
-              <td>Table cell</td>
-              <td>
-              <DropdownButton title="Action" id="dropdown-2" pullRight>
-                  <MenuItem>View</MenuItem>
-                  <MenuItem>Update</MenuItem>
-              </DropdownButton>
-              </td>
-            </tr>
-            <tr>
-              <td>2</td>
-              <td>Table cell</td>
-              <td>Table cell</td>
-              <td>Table cell</td>
-              <td>Table cell</td>
-              <td>
-              <DropdownButton title="Action" id="dropdown-2" pullRight>
-                  <MenuItem>View</MenuItem>
-                  <MenuItem>Update</MenuItem>
-              </DropdownButton>
-              </td>
-            </tr>
-            <tr>
-              <td>2</td>
-              <td>Table cell</td>
-              <td>Table cell</td>
-              <td>Table cell</td>
-              <td>Table cell</td>
-              <td>
-              <DropdownButton title="Action" id="dropdown-2" pullRight>
-                  <MenuItem>View</MenuItem>
-                  <MenuItem>Update</MenuItem>
-              </DropdownButton>
-              </td>
-            </tr>
-            <tr>
-              <td>2</td>
-              <td>Table cell</td>
-              <td>Table cell</td>
-              <td>Table cell</td>
-              <td>Table cell</td>
-              <td>
-              <DropdownButton title="Action" id="dropdown-2" pullRight>
-                  <MenuItem>View</MenuItem>
-                  <MenuItem>Update</MenuItem>
-              </DropdownButton>
-              </td>
-            </tr>
+          <tbody id="categoryTypeTableResultBoday">
+                {renderBody()}
+            </tbody>
 
-            <tr>
-              <td>3</td>
-              <td>Table cell</td>
-              <td>Table cell</td>
-              <td>Table cell</td>
-              <td>Table cell</td>
-              <td>
-                <DropdownButton title="Action" id="dropdown-3" pullRight>
-                    <MenuItem>View</MenuItem>
-                    <MenuItem>Update</MenuItem>
-                </DropdownButton>
-              </td>
-            </tr>
-          </tbody>
         </Table>
       </CardText>
       </Card>
@@ -308,7 +243,7 @@ class ShowCategoryType extends Component {
           search(e)
         }}>
           <Card>
-            <CardHeader title={< strong style = {{color:"#5a3e1b"}} > Modify Category Type < /strong>}/>
+             <CardHeader title={< strong style = {{color:"#5a3e1b"}} > Modify Category Type < /strong>}/>
 
             <CardText>
               <Card>
@@ -360,37 +295,15 @@ const mapDispatchToProps = dispatch => ({
           current: [],
           required: [ ]
         },
-        pattern: {
-          current: [],
-          required: ["assessmentNo", "oldAssessmentNo", "mobileNo", "aadharNo", "name"]
-        }
+
       }
     });
   },
+
   handleChange: (e, property, isRequired, pattern) => {
     dispatch({type: "HANDLE_CHANGE", property, value: e.target.value, isRequired, pattern});
   },
-  handleChangeNextOne: (e, property, propertyOne, isRequired, pattern) => {
-    dispatch({
-      type: "HANDLE_CHANGE_NEXT_ONE",
-      property,
-      propertyOne,
-      value: e.target.value,
-      isRequired,
-      pattern
-    })
-  },
-  handleChangeNextTwo: (e, property, propertyOne, propertyTwo, isRequired, pattern) => {
-    dispatch({
-      type: "HANDLE_CHANGE_NEXT_ONE",
-      property,
-      propertyOne,
-      propertyTwo,
-      value: e.target.value,
-      isRequired,
-      pattern
-    })
-  },
+
   showTable:(state)=>
   {
     dispatch({type:"SHOW_TABLE",state});

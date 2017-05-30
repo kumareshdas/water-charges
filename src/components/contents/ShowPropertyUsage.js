@@ -68,7 +68,7 @@ class ShowPropertyUsage extends Component {
   }
 
   componentWillUnmount(){
-     $('#propertyTaxTable')
+     $('#propertyUsageTable')
      .DataTable()
      .destroy(true);
   }
@@ -89,13 +89,13 @@ class ShowPropertyUsage extends Component {
   componentWillUpdate() {
     if(flag == 1) {
       flag = 0;
-      $('#propertyTaxTable').dataTable().fnDestroy();
+      $('#propertyUsageTable').dataTable().fnDestroy();
     }
   }
 
   componentDidUpdate(prevProps, prevState) {
       if (true) {
-          $('#propertyTaxTable').DataTable({
+          $('#propertyUsageTable').DataTable({
             dom: 'lBfrtip',
             buttons: [
                       'excel', 'pdf', 'print'
@@ -114,20 +114,19 @@ class ShowPropertyUsage extends Component {
       isFormValid,
       isTableShow,
       handleChange,
-      handleChangeNextOne,
-      handleChangeNextTwo,
+
       buttonText
     } = this.props;
     let {search} = this;
-    console.log(showPropertyUsage);
-    console.log(isTableShow);
+     console.log(showPropertyUsage);
+
     const viewTabel=()=>
     {
       return (
         <Card>
           <CardHeader title={< strong style = {{color:"#5a3e1b"}} > Result < /strong>}/>
           <CardText>
-        <Table id="propertyTaxTable" style={{color:"black",fontWeight: "normal"}} bordered responsive>
+        <Table id="propertyUsageTable" style={{color:"black",fontWeight: "normal"}} bordered responsive>
           <thead style={{backgroundColor:"#f2851f",color:"white"}}>
             <tr>
 
@@ -356,28 +355,7 @@ const mapDispatchToProps = dispatch => ({
   handleChange: (e, property, isRequired, pattern) => {
     dispatch({type: "HANDLE_CHANGE", property, value: e.target.value, isRequired, pattern});
   },
-  handleChangeNextOne: (e, property, propertyOne, isRequired, pattern) => {
-    dispatch({
-      type: "HANDLE_CHANGE_NEXT_ONE",
-      property,
-      propertyOne,
-      value: e.target.value,
-      isRequired,
-      pattern
-    })
-  },
-  handleChangeNextTwo: (e, property, propertyOne, propertyTwo, isRequired, pattern) => {
-    dispatch({
-      type: "HANDLE_CHANGE_NEXT_ONE",
-      property,
-      propertyOne,
-      propertyTwo,
-      value: e.target.value,
-      isRequired,
-      pattern
-    })
-  },
-  showTable:(state)=>
+    showTable:(state)=>
   {
     dispatch({type:"SHOW_TABLE",state});
   },

@@ -1,3 +1,15 @@
+function getUrlVars() {
+   var vars = [],
+       hash;
+   var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+   for (var i = 0; i < hashes.length; i++) {
+       hash = hashes[i].split('=');
+       vars.push(hash[0]);
+       vars[hash[0]] = hash[1];
+   }
+   return vars;
+}
+
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 
@@ -10,18 +22,10 @@ import Checkbox from 'material-ui/Checkbox';
 import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
 import RaisedButton from 'material-ui/RaisedButton';
+import Api from '../../../api/wCAPIS';
+
 
 const $ = require('jquery');
-$.DataTable = require('datatables.net');
-const dt = require('datatables.net-bs');
-
-
-const buttons = require('datatables.net-buttons-bs');
-
-require('datatables.net-buttons/js/buttons.colVis.js'); // Column visibility
-require('datatables.net-buttons/js/buttons.html5.js'); // HTML 5 file export
-require('datatables.net-buttons/js/buttons.flash.js'); // Flash file export
-require('datatables.net-buttons/js/buttons.print.js'); // Print view button
 
 var flag = 0;
 const styles = {
@@ -51,61 +55,85 @@ class CategoryType extends Component {
        this.state = {
          searchBtnText : 'Search'
        }
-       this.search=this.search.bind(this);
+       this.add=this.add.bind(this);
    }
 
-  componentWillMount()
-  {
-    //call boundary service fetch wards,location,zone data
-  }
 
   componentDidMount()
   {
     let {initForm} = this.props;
     initForm();
-
-
-  }
-
-  componentWillUnmount(){
-     $('#propertyTaxTable')
-     .DataTable()
-     .destroy(true);
-  }
+    var _this=this;
 
 
 
-  search(e)
-  {
-      let {showTable,changeButtonText}=this.props;
-      e.preventDefault();
-      console.log("Show Table");
-      flag=1;
-      changeButtonText("Search Again");
-      // this.setState({searchBtnText:'Search Again'})
-      showTable(true);
-  }
+       var type=getUrlVars()["type"];
+        var id=getUrlVars()["id"];
 
-  componentWillUpdate() {
-    if(flag == 1) {
-      flag = 0;
-      $('#propertyTaxTable').dataTable().fnDestroy();
-    }
-  }
+        if(getUrlVars()["type"]==="View")
+        {
+            $("input,select,textarea").prop("disabled", true);
+          }
 
-  componentDidUpdate(prevProps, prevState) {
-      if (true) {
-          $('#propertyTaxTable').DataTable({
-            dom: 'lBfrtip',
-            buttons: [
-                     'copy', 'csv', 'excel', 'pdf', 'print'
-             ],
-             ordering: false,
-             bDestroy: true,
+          if(type==="Update"||type==="View")
+          {
+            let response=Api.commonApiPost("wcms-masters", "category", "_update/"+id, {},{}).then((res)=>
+           {
+              this.setState({
+                list: res.Category
+            });
 
-          });
+        },  (err)=> {
+            alert(err);
+        })
       }
-  }
+}
+
+
+  close(){
+        // widow.close();
+        open(location, '_self').close();
+    }
+
+
+
+  add(e)
+  {
+    var type=getUrlVars()["type"];
+    var id=getUrlVars()["id"];
+
+    // let mode=getUrlVars()["type"];
+
+      let {changeButtonText,categoryType}=this.props;
+      var Category = {
+        name:categoryType.ownerName,
+        description:categoryType.Description,
+        active:categoryType.active,
+        tenantId:'default'
+      }
+      if(type == "Update"){
+        let response=Api.commonApiPost("wcms-masters", "category", "_update/"+id, {},{Category}).then(function(response)
+        {
+        console.log(response);
+      },function(err) {
+          alert(err);
+      });
+
+      }
+
+    else{
+      let response=Api.commonApiPost("wcms-masters", "category", "_create", {},{Category}).then(function(response)
+      {
+      // console.log(response);
+    },function(err) {
+        alert(err);
+    });
+}
+    }
+
+
+
+
 
   render() {
     let {
@@ -113,17 +141,26 @@ class CategoryType extends Component {
       fieldErrors,
       isFormValid,
       handleChange,
-      handleChangeNextOne,
-      handleChangeNextTwo,
-      buttonText
+      buttonText,
+
     } = this.props;
+    let{add}=this;
     let {search} = this;
-    console.log(categoryType);
+    let mode=getUrlVars()["type"];
+
+       console.log(mode);
+
+    const showActionButton=function() {
+      if((!mode) ||mode==="Update")
+      {
+        // console.log(mode);
+        return(<RaisedButton type="submit" label={mode?"Save":"Add"} backgroundColor={brown500} labelColor={white}  onClick={()=> {
+                             add("name","description","active")}} />
+        )
+      }
+    };
         return (
-      <div className="categoryType">
-        <form onSubmit={(e) => {
-          search(e)
-        }}>
+          <div className="categoryType">
           <Card>
             <CardHeader title={< strong style = {{color:"#5a3e1b"}} > Create Type Master< /strong>}/>
 
@@ -139,7 +176,7 @@ class CategoryType extends Component {
                     </Col>
 
                     <Col xs={12} md={6}>
-                      <TextField errorText={fieldErrors.Description
+                      <TextField errorText={fieldErrors.Descrption
                         ? fieldErrors.Description
                         : ""} value={categoryType.Description?categoryType.Description:""} multiLine={true} onChange={(e) => handleChange(e, "Description", false, "")} hintText="Description" floatingLabelText="Description" />
                     </Col>
@@ -148,17 +185,15 @@ class CategoryType extends Component {
                     <Col xs={12} md={6}>
                                         <Checkbox
                                          label="Active"
-                                         errorText={fieldErrors.Active
-                                           ? fieldErrors.Active
-                                           : ""}
-                                         value={categoryType.Active?categoryType.Active:""}
+                                         defaultChecked={true}
+                                         value={categoryType.active?categoryType.active:""}
                                          onCheck={(event,isInputChecked) => {
                                            var e={
                                              "target":{
                                                "value":isInputChecked
                                              }
                                            }
-                                           handleChange(e, "Active", false, "")}
+                                           handleChange(e, "active", true, "")}
                                          }
                                          style={styles.checkbox}
                                          style={styles.topGap}
@@ -177,19 +212,13 @@ class CategoryType extends Component {
               <div style={{
                 float: "center"
               }}>
-              <RaisedButton type="submit" label="Add" backgroundColor={brown500} labelColor={white}/>
-              <RaisedButton label="Close"/>
+
+               {showActionButton()}
+              <RaisedButton label="Close" onClick={(e)=>{this.close()}}/>
               </div>
             </CardText>
           </Card>
-
-
-
-
-
-        </form>
-
-      </div>
+          </div>
     );
   }
 }
@@ -207,7 +236,7 @@ const mapDispatchToProps = dispatch => ({
         },
         pattern: {
           current: [],
-          required: ["assessmentNo", "oldAssessmentNo", "mobileNo", "aadharNo", "doorNo"]
+          required: ["ownerName",]
         }
       }
     });
@@ -215,27 +244,7 @@ const mapDispatchToProps = dispatch => ({
   handleChange: (e, property, isRequired, pattern) => {
     dispatch({type: "HANDLE_CHANGE", property, value: e.target.value, isRequired, pattern});
   },
-  handleChangeNextOne: (e, property, propertyOne, isRequired, pattern) => {
-    dispatch({
-      type: "HANDLE_CHANGE_NEXT_ONE",
-      property,
-      propertyOne,
-      value: e.target.value,
-      isRequired,
-      pattern
-    })
-  },
-  handleChangeNextTwo: (e, property, propertyOne, propertyTwo, isRequired, pattern) => {
-    dispatch({
-      type: "HANDLE_CHANGE_NEXT_ONE",
-      property,
-      propertyOne,
-      propertyTwo,
-      value: e.target.value,
-      isRequired,
-      pattern
-    })
-  },
+
   showTable:(state)=>
   {
     dispatch({type:"SHOW_TABLE",state});

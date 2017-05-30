@@ -26,7 +26,11 @@ import AcknowledgementSlip from './components/contents/AcknowledgementSlip';
 const Main = () => (
   <main>
     <Switch>
-    <Route exact path='/' component={ShowPropertyUsage}/>
+    <Route exact path='/' component={CategoryType}/>
+    <Route exact path='/ShowCategoryType' component={ShowCategoryType}/>
+
+    <Route exact path='/PropertyCategory' component={PropertyCategory}/>
+    <Route exact path='/ShowPropertyUsage' component={ShowPropertyUsage}/>
     <Route exact path='/ShowPropertyCategory' component={ShowPropertyCategory}/>
     <Route exact path='/ShowPropertyPipeSize' component={ShowPropertyPipeSize}/>
     <Route exact path='/ShowDocumentName' component={ShowDocumentName}/>
@@ -34,11 +38,9 @@ const Main = () => (
     <Route exact path='/masters/PropertyCategory' component={PropertyCategory}/>
     <Route exact path='/masters/PropertyUsage' component={PropertyUsage}/>
     <Route exact path='/masters/PropertyPipeSize' component={PropertyPipeSize}/>
-      <Route exact path='/ShowCategoryType' component={ShowCategoryType}/>
       <Route exact path='/AcknowledgementSlip' component={AcknowledgementSlip}/>
       <Route exact path='/ShowUsageType' component={ShowUsageType}/>
       <Route exact path='/WaterTapConnection' component={WaterTapConnection}/>
-
       <Route exact path='/masters/UsageType' component={UsageType}/>
       <Route exact path='/masters/PipeSize' component={PipeSize}/>
       <Route exact path='/ShowPipeSize' component={ShowPipeSize}/>

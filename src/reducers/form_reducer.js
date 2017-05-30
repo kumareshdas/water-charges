@@ -82,13 +82,17 @@ export default (state = defaultState, action) => {
                 isFormValid: validationData.isFormValid
             }
 
-        case "RESET_STATE":
-            return {
-                ...state,
-                form: {},
-                fieldErrors: {},
-                validationData: action.validationData
-            }
+            case "RESET_STATE":
+          return {
+            form: {},
+            fieldErrors: {},
+            validationData: action.validationData,
+            msg: '',
+            dialogOpen: false,
+            isFormValid: false,
+            showTable:false,
+            buttonText:"Search"
+          }
         case 'FIELD_ERRORS':
             return {
                 ...state,

@@ -112,7 +112,8 @@ class PipeSize extends Component {
         tenantId:'default'
     }
       if(type == "Update"){
-        let response=Api.commonApiPost("wcms-masters", "category", "_update/"+id, {},{PipeSize}).then(function(response)
+        console.log(type);
+        let response=Api.commonApiPost("wcms-masters", "pipesize", "_update/"+id, {},{PipeSize:PipeSize}).then(function(response)
         {
         console.log(response);
       },function(err) {

@@ -112,7 +112,7 @@ class CategoryType extends Component {
         tenantId:'default'
       }
       if(type == "Update"){
-        let response=Api.commonApiPost("wcms-masters", "category", "_update/"+id, {},{Category}).then(function(response)
+        let response=Api.commonApiPost("wcms-masters", "category", "_update/"+id, {},{Category:Category}).then(function(response)
         {
         console.log(response);
       },function(err) {

@@ -61,6 +61,7 @@ class PipeSize extends Component {
          searchBtnText : 'Search'
        }
        this.add=this.add.bind(this);
+       this.handleChangeState = this.handleChangeState.bind(this);
    }
 
 
@@ -68,6 +69,30 @@ class PipeSize extends Component {
   {
     let {initForm} = this.props;
     initForm();
+    var _this=this;
+
+
+
+       var type=getUrlVars()["type"];
+        var id=getUrlVars()["id"];
+
+        if(getUrlVars()["type"]==="View")
+        {
+            $("input,select,textarea").prop("disabled", true);
+          }
+
+          if(type==="Update"||type==="View")
+          {
+            let response=Api.commonApiPost("wcms-masters", "pipesize", "_update/"+id, {},{}).then((res)=>
+           {
+              this.setState({
+                list: res.Category
+            });
+
+        },  (err)=> {
+            alert(err);
+        })
+      }
 
 
   }
@@ -83,7 +108,7 @@ class PipeSize extends Component {
       var PipeSize = {
         sizeInMilimeter:pipeSize.sizeInMilimeter,
         sizeInInch:pipeSize.sizeInInch,
-        active:pipeSize.active,
+        active:pipeSize.Active,
         tenantId:'default'
     }
       if(type == "Update"){
@@ -109,13 +134,12 @@ class PipeSize extends Component {
 
 
 
-  // componentWillUpdate() {
-  //   if(flag == 1) {
-  //     flag = 0;
-  //     $('#propertyTaxTable').dataTable().fnDestroy();
-  //   }
-  // }
 
+  handleChangeState(e, name, isRequired, pattern) {
+    this.props.handleChange(e, name, isRequired, pattern);
+    var inches = e.target.value * 0.039;
+    this.props.handleChange({target:{value: inches}}, "sizeInInch", false, "");
+  }
 
   render() {
     let {
@@ -125,7 +149,7 @@ class PipeSize extends Component {
       handleChange,
 
     } = this.props;
-    let {add} = this;
+    let {add, handleChangeState} = this;
     let mode=getUrlVars()["type"];
 
     const showActionButton=function() {
@@ -151,16 +175,16 @@ class PipeSize extends Component {
                     <Col xs={12} md={6}>
                       <TextField errorText={fieldErrors.sizeInMilimeter
                         ? fieldErrors.sizeInMilimeter
-                        : ""} value={pipeSize.sizeInMilimeter?pipeSize.sizeInMilimeter:""} onChange={(e) =>{ handleChange(e, "sizeInMilimeter", false, "");
+                        : ""} value={pipeSize.sizeInMilimeter?pipeSize.sizeInMilimeter:""} onChange={(e) =>{ handleChangeState(e, "sizeInMilimeter", false, "");
 
-                         
+
                       } } hintText="123456" floatingLabelText="H.S.C Pipe Size (mm)" />
                     </Col>
 
                     <Col xs={12} md={6}>
                       <TextField  disabled={true} errorText={fieldErrors.sizeInInch
                         ? fieldErrors.sizeInInch
-                        : ""} value={pipeSize.sizeInMilimeter?pipeSize.sizeInMilimeter*0.039:""} onChange={(e) => handleChange(e, "sizeInInch", false, "")}  floatingLabelText="H.S.C Pipe Size (inch)" />
+                        : ""} value={pipeSize.sizeInInch?pipeSize.sizeInInch:""} onChange={(e) => handleChange(e, "sizeInInch", false, "")}  floatingLabelText="H.S.C Pipe Size (inch)" />
                     </Col>
                     </Row>
                     <Row>
@@ -232,6 +256,8 @@ const mapDispatchToProps = dispatch => ({
   },
   handleChange: (e, property, isRequired, pattern) => {
     dispatch({type: "HANDLE_CHANGE", property, value: e.target.value, isRequired, pattern});
+
+
   },
 
 });

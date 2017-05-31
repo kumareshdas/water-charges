@@ -10,6 +10,9 @@ function getUrlVars() {
    return vars;
 }
 
+
+
+
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 
@@ -21,8 +24,9 @@ import DatePicker from 'material-ui/DatePicker';
 import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
 import RaisedButton from 'material-ui/RaisedButton';
-import Api from '../../api/wCAPIS';
 import DataTable from '../common/Table';
+import Api from '../../api/wCAPIS';
+
 
 const $ = require('jquery');
 $.DataTable = require('datatables.net');
@@ -58,31 +62,57 @@ const styles = {
   }
 };
 
-class ShowPipeSize extends Component {
+class showPipeSize extends Component {
   constructor(props) {
        super(props);
        this.state = {
-         searchBtnText : 'Search',
-         list:[],
+         searchBtnText : 'Search',list:[],
+         tenantId : 'default',
+
        }
        this.search=this.search.bind(this);
    }
 
+   close(){
+         // widow.close();
+         open(location, '_self').close();
+     }
+
   componentWillMount()
   {
-    //call boundary service fetch wards,location,zone data
+    $('#pipeSizeTable').DataTable({
+         dom: 'lBfrtip',
+         buttons: [
+                   'excel', 'pdf', 'print'
+          ],
+          ordering: false,
+          bDestroy: true,
+
+       });
+
+        let response=Api.commonApiPost("wcms-masters", "pipesize", "_search", {},{}).then((res)=>
+    {
+      this.setState({
+        list: res.PipeSize
+      });
+
+    },(err)=> {
+        alert(err);
+    });//call boundary service fetch wards,location,zone data
   }
 
   componentDidMount()
   {
     let {initForm} = this.props;
+    // let tenantId ='default';
     initForm();
 
 
-  }
+
+}
 
   componentWillUnmount(){
-     $('#propertyTaxTable')
+     $('#pipeSizeTable')
      .DataTable()
      .destroy(true);
   }
@@ -93,7 +123,7 @@ class ShowPipeSize extends Component {
   {
       let {showTable,changeButtonText}=this.props;
       e.preventDefault();
-      console.log("Show Table");
+      // console.log("Show Table");
       flag=1;
       changeButtonText("Search Again");
       // this.setState({searchBtnText:'Search Again'})
@@ -103,40 +133,42 @@ class ShowPipeSize extends Component {
   componentWillUpdate() {
     if(flag == 1) {
       flag = 0;
-      $('#propertyTaxTable').dataTable().fnDestroy();
+      $('#pipeSizeTable').dataTable().fnDestroy();
     }
   }
 
   componentDidUpdate(prevProps, prevState) {
-      if (true) {
-          $('#propertyTaxTable').DataTable({
-            dom: 'lBfrtip',
-            buttons: [
-                      'excel', 'pdf', 'print'
-             ],
-             ordering: false,
-             bDestroy: true,
+    // if (true) {
+    //     $('#pipeSizeTable').DataTable({
+    //       dom: 'lBfrtip',
+    //       buttons: [
+    //                 'excel', 'pdf', 'print'
+    //        ],
+    //        ordering: false,
+    //        bDestroy: true,
+    //
+    //     });
+    // }
 
-          });
-      }
   }
 
   render() {
     let {
-      showPipeSize,
+      showCategoryType,
       fieldErrors,
       isFormValid,
       isTableShow,
       handleChange,
-      handleChangeNextOne,
+      handleChangeState,
       handleChangeNextTwo,
       buttonText
     } = this.props;
+
     let {search} = this;
     let{list}=this.state;
-    
-    console.log(showPipeSize);
-    console.log(isTableShow);
+    // console.log(showCategoryType);
+    // console.log(isTableShow);
+    // console.log(list);
     let renderAction=function(type,id){
       if (type==="Update") {
         console.log(type);
@@ -155,29 +187,30 @@ class ShowPipeSize extends Component {
 
         }
 }
-let renderBody=function()
-{
-  //  console.log(list);
-  return list.map((item,index)=>
-  {
 
-        return (<tr key={index}>
-                  <td>{index+1}</td>
-                  <td data-label="code">{item.code}</td>
-                  <td data-label="name">{item.name}</td>
-                  <td data-label="active">{item.active?"ACTIVE":"INACTIVE"}</td>
-                  <td data-label="action">
-                {renderAction(getUrlVars()["type"],item.id)}
-                </td>
+    let renderBody=function()
+    {
+      //  console.log(list);
+      return list.map((item,index)=>
+      {
 
-
-
-            </tr>
-        );
+            return (<tr key={index}>
+                      <td>{index+1}</td>
+                      <td data-label="code">{item.code}</td>
+                      <td data-label="sizeInMilimeter">{item.sizeInMilimeter}</td>
+                      <td data-label="active">{item.active?"ACTIVE":"INACTIVE"}</td>
+                      <td data-label="action">
+                    {renderAction(getUrlVars()["type"],item.id)}
+                    </td>
 
 
-  })
-}
+
+                </tr>
+            );
+
+
+      })
+    }
 
     const viewTabel=()=>
     {
@@ -185,21 +218,20 @@ let renderBody=function()
         <Card>
           <CardHeader title={< strong style = {{color:"#5a3e1b"}} > Result < /strong>}/>
           <CardText>
-        <Table id="propertyTaxTable" style={{color:"black",fontWeight: "normal"}} bordered responsive>
+        <Table id="pipeSizeTable" style={{color:"black",fontWeight: "normal"}} bordered responsive>
           <thead style={{backgroundColor:"#f2851f",color:"white"}}>
             <tr>
-              <th>#</th>
-              <th>Code</th>
               <th>Sl No.</th>
+              <th>Code</th>
               <th>H.S.C Pipe Size (mm)</th>
-              <th> Status</th>
+              <th>Status</th>
               <th>Action</th>
             </tr>
           </thead>
-          <tbody>
-          {renderBody()}
+          <tbody id="pipeSizeTableResultBoday">
+                {renderBody()}
+            </tbody>
 
-          </tbody>
         </Table>
       </CardText>
       </Card>
@@ -211,7 +243,7 @@ let renderBody=function()
           search(e)
         }}>
           <Card>
-            <CardHeader title={< strong style = {{color:"#5a3e1b"}} > Modify Pipe Size < /strong>}/>
+             <CardHeader title={< strong style = {{color:"#5a3e1b"}} > Modify Category Type < /strong>}/>
 
             <CardText>
               <Card>
@@ -219,10 +251,12 @@ let renderBody=function()
                   <Grid>
                     <Row>
                     <Col xs={12} md={6}>
-                      <TextField errorText={fieldErrors.name
-                        ? fieldErrors.name
-                        : ""} value={showPipeSize.name?showPipeSize.name:""} onChange={(e) => handleChange(e, "name", false, "")} hintText="Name" floatingLabelText="Name" />
-                    </Col>
+                    <TextField errorText={fieldErrors.sizeInMilimeter
+                      ? fieldErrors.sizeInMilimeter
+                      : ""} value={showPipeSize.sizeInMilimeter?showPipeSize.sizeInMilimeter:""} onChange={(e) =>{ handleChangeState(e, "sizeInMilimeter", false, "");
+
+
+                    } } hintText="123456" floatingLabelText="H.S.C Pipe Size (mm)" />  </Col>
 
                     </Row>
 
@@ -231,10 +265,10 @@ let renderBody=function()
                 </CardText>
               </Card>
 
-                            <div style={{
+              <div style={{
                 float: "center"
               }}>
-                <RaisedButton type="submit" disabled={!isFormValid} label={buttonText} backgroundColor={"#5a3e1b"} labelColor={white}/>
+                <RaisedButton type="submit"  label={buttonText} backgroundColor={"#5a3e1b"} labelColor={white}/>
                 <RaisedButton label="Close"/>
               </div>
             </CardText>
@@ -263,37 +297,15 @@ const mapDispatchToProps = dispatch => ({
           current: [],
           required: [ ]
         },
-        pattern: {
-          current: [],
-          required: ["assessmentNo", "oldAssessmentNo", "mobileNo", "aadharNo", "name"]
-        }
+
       }
     });
   },
+
   handleChange: (e, property, isRequired, pattern) => {
     dispatch({type: "HANDLE_CHANGE", property, value: e.target.value, isRequired, pattern});
   },
-  handleChangeNextOne: (e, property, propertyOne, isRequired, pattern) => {
-    dispatch({
-      type: "HANDLE_CHANGE_NEXT_ONE",
-      property,
-      propertyOne,
-      value: e.target.value,
-      isRequired,
-      pattern
-    })
-  },
-  handleChangeNextTwo: (e, property, propertyOne, propertyTwo, isRequired, pattern) => {
-    dispatch({
-      type: "HANDLE_CHANGE_NEXT_ONE",
-      property,
-      propertyOne,
-      propertyTwo,
-      value: e.target.value,
-      isRequired,
-      pattern
-    })
-  },
+
   showTable:(state)=>
   {
     dispatch({type:"SHOW_TABLE",state});
@@ -306,4 +318,4 @@ const mapDispatchToProps = dispatch => ({
 
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(ShowPipeSize);
+export default connect(mapStateToProps, mapDispatchToProps)(showPipeSize);

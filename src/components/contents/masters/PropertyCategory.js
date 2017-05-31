@@ -30,7 +30,7 @@ const styles = {
 };
 
 
-class PropertyCategory extends Component {
+class PropertyTypeCategoryType extends Component {
 
   constructor(props) {
        super(props);
@@ -48,14 +48,14 @@ class PropertyCategory extends Component {
 
     render(){
       let {
-        propertyCategory,
+        propertyTypeCategoryType,
         propertyType,
         handleChange,
         fieldErrors,
       }=this.props;
-      console.log(propertyCategory);
+      console.log(propertyTypeCategoryType);
       return(
-        <div className="PropertyCategory">
+        <div className="propertyTypeCategoryType">
             <Card>
                 <CardHeader
                     title={<strong style={{color:brown500}}>Create Property Category </strong>}
@@ -68,15 +68,15 @@ class PropertyCategory extends Component {
                                   <Row>
                                     <Col xs={12} md={6}>
 
-                                      <SelectField errorText={fieldErrors.propertyType
-                                        ? fieldErrors.propertyType
-                                        : ""} value={propertyCategory.propertyType?propertyCategory.propertyType:""} onChange={(event, index, value) => {
+                                      <SelectField errorText={fieldErrors.propertyTypeId
+                                        ? fieldErrors.propertyTypeId
+                                        : ""} value={propertyTypeCategoryType.propertyTypeId?propertyTypeCategoryType.propertyTypeId:""} onChange={(event, index, value) => {
                                           var e = {
                                             target: {
                                               value: value
                                             }
                                           };
-                                          handleChange(e, "propertyType", false, "")}} floatingLabelText="Property Type" >
+                                          handleChange(e, "propertyTypeId", false, "")}} floatingLabelText="Property Type" >
                                         <MenuItem value={1} primaryText=""/>
                                         <MenuItem value={2} primaryText="Every Night"/>
                                         <MenuItem value={3} primaryText="Weeknights"/>
@@ -87,15 +87,15 @@ class PropertyCategory extends Component {
                                     </Col>
 
                                     <Col xs={12} md={6}>
-                                      <SelectField errorText={fieldErrors.categoryType
+                                      <SelectField errorText={fieldErrors.categoryTypeId
                                         ? fieldErrors.categoryType
-                                        : ""} value={propertyCategory.categoryType?propertyCategory.categoryType:""} onChange={(event, index, value) =>{
+                                        : ""} value={propertyTypeCategoryType.categoryTypeId?propertyTypeCategoryType.categoryTypeId:""} onChange={(event, index, value) =>{
                                           var e = {
                                             target: {
                                               value: value
                                             }
                                           };
-                                          handleChange(e, "categoryType", false, "")}
+                                          handleChange(e, "categoryTypeId", false, "")}
                                         } floatingLabelText="Category Type" >
                                         <MenuItem value={1} primaryText=""/>
                                         <MenuItem value={2} primaryText="Every Night"/>
@@ -113,7 +113,7 @@ class PropertyCategory extends Component {
                                                          ? fieldErrors.Active
                                                          : ""}
 
-                                                       value={propertyCategory.active?propertyCategory.active:""}
+                                                       value={propertyTypeCategoryType.active?propertyTypeCategoryType.active:""}
                                                        onCheck={(event,isInputChecked) => {
                                                          var e={
                                                            "target":{
@@ -144,7 +144,7 @@ class PropertyCategory extends Component {
     }
 
 }
-const mapStateToProps = state => ({propertyCategory: state.form.form, fieldErrors: state.form.fieldErrors, isFormValid: state.form.isFormValid,isTableShow:state.form.showTable,buttonText:state.form.buttonText});
+const mapStateToProps = state => ({propertyTypeCategoryType: state.form.form, fieldErrors: state.form.fieldErrors, isFormValid: state.form.isFormValid,isTableShow:state.form.showTable,buttonText:state.form.buttonText});
 
 const mapDispatchToProps = dispatch => ({
   initForm: () => {
@@ -167,4 +167,4 @@ const mapDispatchToProps = dispatch => ({
 
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(PropertyCategory);
+export default connect(mapStateToProps, mapDispatchToProps)(PropertyTypeCategoryType);

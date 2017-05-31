@@ -30,7 +30,7 @@ const styles = {
 };
 
 
-class PropertyPipeSize extends Component {
+class propertyTypePipeSizeType extends Component {
 
   constructor(props) {
        super(props);
@@ -47,7 +47,7 @@ class PropertyPipeSize extends Component {
         fieldErrors,
       }=this.props;
       return(
-        <div className="PropertyPipeSize">
+        <div className="propertyTypePipeSizeType">
             <Card>
                 <CardHeader
                     title={<strong style={{color:brown500}}>Create Property Pipe Size</strong>}
@@ -60,15 +60,15 @@ class PropertyPipeSize extends Component {
                                   <Row>
                                     <Col xs={12} md={6}>
 
-                                      <SelectField errorText={fieldErrors.vacantLandPlotArea
-                                        ? fieldErrors.vacantLandPlotArea
-                                        : ""} value={PropertyPipeSize.vacantLandPlotArea?PropertyPipeSize.vacantLandPlotArea:""} onChange={(event, index, value) => {
+                                      <SelectField errorText={fieldErrors.propertyTypeId
+                                        ? fieldErrors.propertyTypeId
+                                        : ""} value={propertyTypePipeSizeType.propertyTypeId?propertyTypePipeSizeType.propertyTypeId:""} onChange={(event, index, value) => {
                                           var e = {
                                             target: {
                                               value: value
                                             }
                                           };
-                                          handleChange(e, "vacantLandPlotArea", false, "")}} floatingLabelText="Property Type" >
+                                          handleChange(e, "propertyTypeId", false, "")}} floatingLabelText="Property Type" >
                                         <MenuItem value={1} primaryText=""/>
                                         <MenuItem value={2} primaryText="Every Night"/>
                                         <MenuItem value={3} primaryText="Weeknights"/>
@@ -79,15 +79,15 @@ class PropertyPipeSize extends Component {
                                     </Col>
 
                                     <Col xs={12} md={6}>
-                                      <SelectField errorText={fieldErrors.layoutApprovalAuthority
-                                        ? fieldErrors.layoutApprovalAuthority
-                                        : ""} value={PropertyPipeSize.layoutApprovalAuthority?PropertyPipeSize.layoutApprovalAuthority:""} onChange={(event, index, value) =>{
+                                      <SelectField errorText={fieldErrors.pipeSizeTypeId
+                                        ? fieldErrors.pipeSizeTypeId
+                                        : ""} value={propertyTypePipeSizeType.pipeSizeTypeId?propertyTypePipeSizeType.pipeSizeTypeId:""} onChange={(event, index, value) =>{
                                           var e = {
                                             target: {
                                               value: value
                                             }
                                           };
-                                          handleChange(e, "layoutApprovalAuthority", false, "")}
+                                          handleChange(e, "pipeSizeTypeId", false, "")}
                                         } floatingLabelText="H.S.C Pipe Size (*mm)" >
                                         <MenuItem value={1} primaryText=""/>
                                         <MenuItem value={2} primaryText="Every Night"/>
@@ -104,7 +104,7 @@ class PropertyPipeSize extends Component {
                                                        errorText={fieldErrors.Active
                                                          ? fieldErrors.Active
                                                          : ""}
-                                                       value={PropertyPipeSize.Active?PropertyPipeSize.Active:""}
+                                                       value={propertyTypePipeSizeType.Active?propertyTypePipeSizeType.Active:""}
                                                        onCheck={(event,isInputChecked) => {
                                                          var e={
                                                            "target":{
@@ -158,4 +158,4 @@ const mapDispatchToProps = dispatch => ({
 
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(PropertyPipeSize);
+export default connect(mapStateToProps, mapDispatchToProps)(propertyTypePipeSizeType);

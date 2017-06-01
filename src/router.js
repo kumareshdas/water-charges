@@ -26,8 +26,8 @@ import AcknowledgementSlip from './components/contents/AcknowledgementSlip';
 const Main = () => (
   <main>
     <Switch>
-    <Route exact path='/' component={PipeSize}/>
-    <Route exact path='/masters/CategoryType' component={CategoryType}/>
+    <Route exact path='/' component={CategoryType}/>
+    <Route exact path='/masters/PipeSize' component={PipeSize}/>
 
     <Route exact path='/ShowCategoryType' component={ShowCategoryType}/>
 

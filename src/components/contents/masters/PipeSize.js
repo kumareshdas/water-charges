@@ -67,7 +67,7 @@ class PipeSize extends Component {
 
   componentDidMount()
   {
-    let {initForm} = this.props;
+    let {initForm,setForm} = this.props;
     initForm();
     var _this=this;
 
@@ -76,18 +76,21 @@ class PipeSize extends Component {
        var type=getUrlVars()["type"];
         var id=getUrlVars()["id"];
 
-        if(getUrlVars()["type"]==="View")
-        {
-            $("input,select,textarea").prop("disabled", true);
-          }
+        // if(getUrlVars()["type"]==="View")
+        // {
+        //     $("input,select,textarea,TextField").prop("disabled", true);
+        //   }
 
           if(type==="Update"||type==="View")
           {
-            let response=Api.commonApiPost("wcms-masters", "pipesize", "_update/"+id, {},{}).then((res)=>
+            let response=Api.commonApiPost("wcms-masters", "pipesize", "_search", {id},{}).then((res)=>
            {
-              this.setState({
-                list: res.Category
-            });
+             console.log(res.PipeSize[0]);
+               setForm(res.PipeSize[0]);
+
+            //   this.setState({.PipeSize[0]
+            //     list: res.PipeSize
+            // });
 
         },  (err)=> {
             alert(err);
@@ -101,18 +104,15 @@ class PipeSize extends Component {
   {
     var type=getUrlVars()["type"];
     var id=getUrlVars()["id"];
-
-    // let mode=getUrlVars()["type"];
-
-      let {changeButtonText,pipeSize}=this.props;
-      var PipeSize = {
+    let {changeButtonText,pipeSize}=this.props;
+    var PipeSize = {
         sizeInMilimeter:pipeSize.sizeInMilimeter,
         sizeInInch:pipeSize.sizeInInch,
         active:pipeSize.Active,
         tenantId:'default'
     }
       if(type == "Update"){
-        console.log(type);
+
         let response=Api.commonApiPost("wcms-masters", "pipesize", "_update/"+id, {},{PipeSize:PipeSize}).then(function(response)
         {
         console.log(response);
@@ -152,7 +152,7 @@ class PipeSize extends Component {
     } = this.props;
     let {add, handleChangeState} = this;
     let mode=getUrlVars()["type"];
-
+    console.log(pipeSize);
     const showActionButton=function() {
       if((!mode) ||mode==="Update")
       {
@@ -162,7 +162,8 @@ class PipeSize extends Component {
         )
       }
     };
-     console.log(pipeSize);
+    //  console.log(pipeSize);
+    //  let type=getUrlVars()["type"]);
         return (
       <div className="pipeSize">
           <Card>
@@ -176,7 +177,7 @@ class PipeSize extends Component {
                     <Col xs={12} md={6}>
                       <TextField errorText={fieldErrors.sizeInMilimeter
                         ? fieldErrors.sizeInMilimeter
-                        : ""} value={pipeSize.sizeInMilimeter?pipeSize.sizeInMilimeter:""} onChange={(e) =>{ handleChangeState(e, "sizeInMilimeter", false, "");
+                        : ""} value={pipeSize.sizeInMilimeter?pipeSize.sizeInMilimeter:""}  onChange={(e) =>{ handleChangeState(e, "sizeInMilimeter", false, "");
 
 
                       } } hintText="123456" floatingLabelText="H.S.C Pipe Size (mm)" />
@@ -193,7 +194,7 @@ class PipeSize extends Component {
                                         <Checkbox
                                          label="Active"
                                          defaultChecked={true}
-                                         value={pipeSize.Active?pipeSize.Active:""}
+                                         value={pipeSize.active?pipeSize.active:""}
                                          onCheck={(event,isInputChecked) => {
                                            var e={
                                              "target":{
@@ -243,6 +244,22 @@ const mapDispatchToProps = dispatch => ({
   initForm: () => {
     dispatch({
       type: "RESET_STATE",
+      validationData: {
+        required: {
+          current: [],
+          required: [ ]
+        },
+        pattern: {
+          current: [],
+          required: ["sizeInMilimeter"]
+        }
+      }
+    });
+  },
+  setForm: (form) => {
+    dispatch({
+      type: "SET_FORM",
+      data:form,
       validationData: {
         required: {
           current: [],

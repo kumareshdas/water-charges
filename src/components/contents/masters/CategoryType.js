@@ -61,7 +61,7 @@ class CategoryType extends Component {
 
   componentDidMount()
   {
-    let {initForm} = this.props;
+    let {initForm,setForm} = this.props;
     initForm();
     var _this=this;
 
@@ -77,11 +77,11 @@ class CategoryType extends Component {
 
           if(type==="Update"||type==="View")
           {
-            let response=Api.commonApiPost("wcms-masters", "category", "_update/"+id, {},{}).then((res)=>
+            let response=Api.commonApiPost("wcms-masters", "category", "_search", {id},{}).then((res)=>
            {
-              this.setState({
-                list: res.Category
-            });
+            //  console.log(res.Category[0]);
+             setForm(res.Category[0]);
+
 
         },  (err)=> {
             alert(err);
@@ -106,8 +106,8 @@ class CategoryType extends Component {
 
       let {changeButtonText,categoryType}=this.props;
       var Category = {
-        name:categoryType.ownerName,
-        description:categoryType.Description,
+        name:categoryType.name,
+        description:categoryType.description,
         active:categoryType.active,
         tenantId:'default'
       }
@@ -170,15 +170,15 @@ class CategoryType extends Component {
                   <Grid>
                     <Row>
                     <Col xs={12} md={6}>
-                      <TextField errorText={fieldErrors.ownerName
-                        ? fieldErrors.ownerName
-                        : ""} value={categoryType.ownerName?categoryType.ownerName:""} onChange={(e) => handleChange(e, "ownerName", false, "")} hintText="Name" floatingLabelText="Name" />
+                      <TextField errorText={fieldErrors.name
+                        ? fieldErrors.name
+                        : ""} value={categoryType.name?categoryType.name:""} onChange={(e) => handleChange(e, "name", false, "")} hintText="Name" floatingLabelText="Name" />
                     </Col>
 
                     <Col xs={12} md={6}>
-                      <TextField errorText={fieldErrors.Descrption
-                        ? fieldErrors.Description
-                        : ""} value={categoryType.Description?categoryType.Description:""} multiLine={true} onChange={(e) => handleChange(e, "Description", false, "")} hintText="Description" floatingLabelText="Description" />
+                      <TextField errorText={fieldErrors.description
+                        ? fieldErrors.description
+                        : ""} value={categoryType.description?categoryType.description:""} multiLine={true} onChange={(e) => handleChange(e, "description", false, "")} hintText="description" floatingLabelText="description" />
                     </Col>
                     </Row>
                     <Row>
@@ -236,11 +236,28 @@ const mapDispatchToProps = dispatch => ({
         },
         pattern: {
           current: [],
-          required: ["ownerName",]
+          required: ["name",]
         }
       }
     });
   },
+  setForm: (form) => {
+    dispatch({
+      type: "SET_FORM",
+      data:form,
+      validationData: {
+        required: {
+          current: [],
+          required: [ ]
+        },
+        pattern: {
+          current: [],
+          required: ["name"]
+        }
+      }
+    });
+  },
+
   handleChange: (e, property, isRequired, pattern) => {
     dispatch({type: "HANDLE_CHANGE", property, value: e.target.value, isRequired, pattern});
   },

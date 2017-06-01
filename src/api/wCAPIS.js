@@ -16,7 +16,7 @@ var instance = axios.create({
 // document.cookie = "SESSIONID=75dedd21-1145-4745-a8aa-1790a737b7c5; JSESSIONID=Nw2kKeNF6Eu42vtXypb3kP4fER1ghjXNMNISiIF5.ip-10-0-0-100; Authorization=Basic Og==";
 
 // var authToken = localStorage.getItem("auth-token");
-var authToken='3e30eaa6-e4c7-4663-b1a3-a999eb641400';
+var authToken='6af1804b-4237-4cd2-9058-4d5d10a91d69';
 //request info from cookies
 var requestInfo = {
     "apiId": "org.egov.pt",

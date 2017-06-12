@@ -16,7 +16,7 @@ var instance = axios.create({
 // document.cookie = "SESSIONID=75dedd21-1145-4745-a8aa-1790a737b7c5; JSESSIONID=Nw2kKeNF6Eu42vtXypb3kP4fER1ghjXNMNISiIF5.ip-10-0-0-100; Authorization=Basic Og==";
 
 // var authToken = localStorage.getItem("auth-token");
-var authToken='6af1804b-4237-4cd2-9058-4d5d10a91d69';
+var authToken='e6465821-fab8-48a8-8e35-d859168d51b6';
 //request info from cookies
 var requestInfo = {
     "apiId": "org.egov.pt",
@@ -37,13 +37,17 @@ var requestInfo = {
 var tenantId="default";
 
 module.exports = {
-  commonApiPost: (context, resource = "", action = "", queryObject = {}, body = {}) => {
+  commonApiPost: (context, resource = "", action = "", queryObject = {}, body = {},isOverrideTenantId=false) => {
     var url = "/" + context + (resource
       ? "/" + resource
       : "") + (action
       ? "/" + action
       : "");
-    url += "?tenantId=" + tenantId;
+      if(!isOverrideTenantId)
+      {
+        url += "?tenantId=" + tenantId;
+
+      }
     for (var variable in queryObject) {
       if (queryObject[variable]) {
         url += "&" + variable + "=" + queryObject[variable];

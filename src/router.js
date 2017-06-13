@@ -6,7 +6,7 @@ import PipeSize from './components/contents/masters/PipeSize';
 import PropertyPipeSize from './components/contents/masters/PropertyPipeSize';
 import PropertyCategory from './components/contents/masters/PropertyCategory';
 import PropertyUsage from './components/contents/masters/PropertyUsage';
-import DocumentName from './components/contents/masters/DocumentName';
+import DocumentApplicationType from './components/contents/masters/DocumentApplicationType';
 import WaterTapConnection from './components/contents/WaterTapConnection';
 import ShowUsageType from './components/contents/ShowUsageType';
 import ShowCategoryType from './components/contents/ShowCategoryType';
@@ -28,19 +28,17 @@ import DocumentType from './components/contents/masters/DocumentType';
 const Main = () => (
   <main>
     <Switch>
-    <Route exact path='/' component={DocumentType}/>
+    <Route exact path='/' component={DocumentApplicationType}/>
     <Route exact path='/masters/PropertyPipeSize' component={PropertyPipeSize}/>
     <Route exact path='/masters/PipeSize' component={PipeSize}/>
-
     <Route exact path='/ShowCategoryType' component={ShowCategoryType}/>
-
     <Route exact path='/CategoryType' component={CategoryType}/>
     <Route exact path='/ShowPropertyUsage' component={ShowPropertyUsage}/>
     <Route exact path='/ShowPropertyCategory' component={ShowPropertyCategory}/>
     <Route exact path='/ShowPropertyPipeSize' component={ShowPropertyPipeSize}/>
     <Route exact path='/ShowDocumentName' component={ShowDocumentName}/>
     <Route exact path='/ShowDocumentType' component={ShowDocumentType}/>
-    <Route exact path='/DocumentName' component={DocumentName}/>
+    <Route exact path='/DocumentType' component={DocumentType}/>
     <Route exact path='/masters/PropertyCategory' component={PropertyCategory}/>
     <Route exact path='/masters/PropertyUsage' component={PropertyUsage}/>
     <Route exact path='/masters/PropertyCategory' component={PropertyCategory}/>

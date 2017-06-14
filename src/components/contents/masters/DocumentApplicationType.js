@@ -162,6 +162,7 @@ add(e)
               })
           }
       }
+      
       return(
         <div className="DocumentApplicationType">
             <Card>

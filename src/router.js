@@ -30,7 +30,7 @@ import DocumentType from './components/contents/masters/DocumentType';
 const Main = () => (
   <main>
     <Switch>
-    <Route exact path='/' component={CategoryType}/>
+    <Route exact path='/' component={PropertyPipeSize}/>
     <Route exact path='/masters/DocumentTypeApplicationType' component={DocumentTypeApplicationType}/>
     <Route exact path='/masters/PropertyPipeSize' component={PropertyPipeSize}/>
     <Route exact path='/masters/CategoryType' component={CategoryType}/>

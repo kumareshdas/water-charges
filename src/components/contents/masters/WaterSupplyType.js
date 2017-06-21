@@ -49,7 +49,7 @@ const styles = {
   }
 };
 
-class WaterSourceType extends Component {
+class WaterSupplyTypes extends Component {
   constructor(props) {
        super(props);
        this.state = {
@@ -77,10 +77,10 @@ class WaterSourceType extends Component {
 
           if(type==="Update"||type==="View")
           {
-            let response=Api.commonApiPost("wcms-masters", "sourcetype/"+id, "_update", {},{}).then((res)=>
+            let response=Api.commonApiPost("wcms-masters", "supplytype/"+id, "_update", {},{}).then((res)=>
            {
               this.setState({
-                list: res.waterSourceType
+                list: res.supplytypes
             });
 
         },  (err)=> {
@@ -104,15 +104,15 @@ class WaterSourceType extends Component {
 
     // let mode=getUrlVars()["type"];
 
-      let {changeButtonText,WaterSourceType}=this.props;
-      var sourceType = {
-        name:WaterSourceType.ownerName,
-        description:WaterSourceType.Description,
-        active:WaterSourceType.active,
+      let {changeButtonText,WaterSupplyTypes}=this.props;
+      var SupplyType = {
+        name:WaterSupplyTypes.ownerName,
+        description:WaterSupplyTypes.Description,
+        active:WaterSupplyTypes.active,
         tenantId:'default'
       }
       if(type == "Update"){
-        let response=Api.commonApiPost("wcms-masters", "sourcetype/"+id, "_update", {},{sourceType:sourceType}).then(function(response)
+        let response=Api.commonApiPost("wcms-masters", "supplytype/"+id, "_update", {},{SupplyType:SupplyType}).then(function(response)
         {
         console.log(response);
       },function(err) {
@@ -122,7 +122,7 @@ class WaterSourceType extends Component {
       }
 
     else{
-      let response=Api.commonApiPost("wcms-masters", "sourcetype", "_create", {},{sourceType}).then(function(response)
+      let response=Api.commonApiPost("wcms-masters", "supplytype", "_create", {},{SupplyType}).then(function(response)
       {
       // console.log(response);
     },function(err) {
@@ -137,7 +137,7 @@ class WaterSourceType extends Component {
 
   render() {
     let {
-      WaterSourceType,
+      WaterSupplyTypes,
       fieldErrors,
       isFormValid,
       handleChange,
@@ -161,9 +161,9 @@ class WaterSourceType extends Component {
       }
     };
         return (
-          <div className="WaterSourceType">
+          <div className="WaterSupplyTypes">
           <Card>
-            <CardHeader title={< strong style = {{color:"#5a3e1b"}} >  Water Source Type< /strong>}/>
+            <CardHeader title={< strong style = {{color:"#5a3e1b"}} >  Water Supply Type< /strong>}/>
 
             <CardText>
               <Card>
@@ -171,13 +171,13 @@ class WaterSourceType extends Component {
                   <Grid>
                     <Row>
                     <Col xs={12} md={6}>
-                      <TextField errorText="This field is required." value={WaterSourceType.ownerName?WaterSourceType.ownerName:""} onChange={(e) => handleChange(e, "ownerName", false, "")} hintText="name" floatingLabelText="Water Source Type" />
+                      <TextField errorText="This field is required." value={WaterSupplyTypes.ownerName?WaterSupplyTypes.ownerName:""} onChange={(e) => handleChange(e, "ownerName", false, "")} hintText="name" floatingLabelText="Water Supply Type" />
                     </Col>
 
                     <Col xs={12} md={6}>
                       <TextField errorText={fieldErrors.Descrption
                         ? fieldErrors.Description
-                        : ""} value={WaterSourceType.Description?WaterSourceType.Description:""} multiLine={true} onChange={(e) => handleChange(e, "Description", false, "")} hintText="Description" floatingLabelText="Description" />
+                        : ""} value={WaterSupplyTypes.Description?WaterSupplyTypes.Description:""} multiLine={true} onChange={(e) => handleChange(e, "Description", false, "")} hintText="Description" floatingLabelText="Description" />
                     </Col>
                     </Row>
                     <Row>
@@ -185,7 +185,7 @@ class WaterSourceType extends Component {
                                         <Checkbox
                                          label="Active"
                                          defaultChecked={true}
-                                         value={WaterSourceType.active?WaterSourceType.active:""}
+                                         value={WaterSupplyTypes.active?WaterSupplyTypes.active:""}
                                          onCheck={(event,isInputChecked) => {
                                            var e={
                                              "target":{
@@ -222,7 +222,7 @@ class WaterSourceType extends Component {
   }
 }
 
-const mapStateToProps = state => ({WaterSourceType: state.form.form, fieldErrors: state.form.fieldErrors, isFormValid: state.form.isFormValid,buttonText:state.form.buttonText});
+const mapStateToProps = state => ({WaterSupplyTypes: state.form.form, fieldErrors: state.form.fieldErrors, isFormValid: state.form.isFormValid,buttonText:state.form.buttonText});
 
 const mapDispatchToProps = dispatch => ({
   initForm: () => {
@@ -256,4 +256,4 @@ const mapDispatchToProps = dispatch => ({
 
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(WaterSourceType);
+export default connect(mapStateToProps, mapDispatchToProps)(WaterSupplyTypes);
